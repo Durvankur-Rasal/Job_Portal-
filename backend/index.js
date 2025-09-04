@@ -9,6 +9,7 @@ import jobRoute from "./routes/job.route.js";
 import applicationRoute from "./routes/application.route.js";
 import chatbotRoute from "./routes/chatbot.route.js";
 import resumeRoute from "./routes/resume.route.js";
+import jobaiRoute from "./routes/jobai.route.js";
 
 dotenv.config({});
 
@@ -35,7 +36,9 @@ app.use("/api/v1/company", companyRoute);
 app.use("/api/v1/job", jobRoute);
 app.use("/api/v1/application", applicationRoute);
 app.use("/api/v1/chatbot", chatbotRoute);
+
 app.use("/api/v1/resume", resumeRoute);
+app.use("/api/v1/jobai", jobaiRoute);
 
 
 

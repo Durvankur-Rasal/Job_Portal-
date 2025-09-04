@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import axios from 'axios'
 import { JOB_API_END_POINT } from '@/utils/constant'
+import { generateJobDescription } from '@/utils/genai'
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
@@ -26,6 +27,23 @@ const PostJob = () => {
         companyId: ""
     });
     const [loading, setLoading]= useState(false);
+    const [descLoading, setDescLoading] = useState(false);
+    const handleGenerateDescription = async () => {
+        if (!input.title || !input.requirements) {
+            toast.error("Please enter job title and requirements first.");
+            return;
+        }
+        setDescLoading(true);
+        try {
+            const description = await generateJobDescription(input.title, input.requirements);
+            setInput({ ...input, description });
+            toast.success("AI-generated description added!");
+        } catch (err) {
+            toast.error("Failed to generate description.");
+        } finally {
+            setDescLoading(false);
+        }
+    };
     const navigate = useNavigate();
 
     const { companies } = useSelector(store => store.company);
@@ -75,15 +93,20 @@ const PostJob = () => {
                                 className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
                             />
                         </div>
-                        <div>
+                        <div className="col-span-2">
                             <Label>Description</Label>
-                            <Input
-                                type="text"
-                                name="description"
-                                value={input.description}
-                                onChange={changeEventHandler}
-                                className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1"
-                            />
+                            <div className="flex gap-2">
+                                <Input
+                                    type="text"
+                                    name="description"
+                                    value={input.description}
+                                    onChange={changeEventHandler}
+                                    className="focus-visible:ring-offset-0 focus-visible:ring-0 my-1 flex-1"
+                                />
+                                <Button type="button" onClick={handleGenerateDescription} disabled={descLoading} className="min-w-[180px]">
+                                    {descLoading ? <Loader2 className='mr-2 h-4 w-4 animate-spin' /> : "Generate Description"}
+                                </Button>
+                            </div>
                         </div>
                         <div>
                             <Label>Requirements</Label>

@@ -39,7 +39,7 @@ export const getAllJobs = async (req, res) => {
         const keyword = req.query.keyword || "";
         const query = {
             $or: [
-                { title: { $regex: keyword, $options: "i" } },
+                { title: { $regex: keyword, $options: "i" } },  // i means make it case insensitive
                 { description: { $regex: keyword, $options: "i" } },
             ]
         };
@@ -82,7 +82,7 @@ export const getJobById = async (req, res) => {
 export const getAdminJobs = async (req, res) => {
     try {
         const adminId = req.id;
-        const jobs = await Job.find({ created_by: adminId }).populate({
+        const jobs = await Job.find({ created_by: adminId }).populate({ // ***********************8
             path:'company',
             createdAt:-1
         });
